@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>修改配置文件</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>保存数据</h1>
+    <form action="/save" method="POST">
+        <div class="form-group">
+            <label for="cookie">cookie：</label>
+            <input type="text" class="form-control" id="cookie" name="cookie" value="{{ cookie }}">
+        </div>
+        <div class="form-group">
+            <label for="user_id">用户id：</label>
+            <input type="text" class="form-control" id="user_id" name="user_id" value="{{ user_id }}">
+        </div>
+         <div class="form-group">
+            <label for="dir">文件路径：</label>
+            <input type="text" class="form-control" id="dir" name="dir" value="{{ dir }}">
+        </div>
+        <div class="form-group">
+            <label for="quality">视频质量：</label>
+            <input type="text" class="form-control" id="quality" name="quality" value="{{ quality }}">
+        </div>
+        <div class="form-group">
+            <label for="attention_day">订阅天数：</label>
+            <input type="text" class="form-control" id="attention_day" name="attention_day" value="{{ attention_day }}">
+        </div>
+        <div class="form-group">
+            <label for="get_time">订阅间隔(h)：</label>
+            <input type="text" class="form-control" id="get_time" name="get_time" value="{{ get_time }}">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">保存</button>
+        </div>
+
+    </form>
+</div>
+
+<!-- 模态框 -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">保存成功</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                保存成功！，将在下一次订阅中生效！！！
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 提交表单后显示模态框
+    document.querySelector('form').addEventListener('submit', function (event) {
+        event.preventDefault(); // 阻止表单提交
+        var form = this; // 存储表单元素的引用
+        // 显示模态框
+        $('#successModal').modal('show');
+        setTimeout(function () {
+            // 执行第二个命令
+            form.submit();
+        }, 3000);
+    });
+</script>
+</body>
+</html>
