@@ -18,7 +18,7 @@
             <label for="user_id">用户id：</label>
             <input type="text" class="form-control" id="user_id" name="user_id" value="{{ user_id }}">
         </div>
-         <div class="form-group">
+        <div class="form-group">
             <label for="dir">文件路径：</label>
             <input type="text" class="form-control" id="dir" name="dir" value="{{ dir }}">
         </div>
@@ -37,8 +37,15 @@
         <div>
             <button type="submit" class="btn btn-primary">保存</button>
         </div>
-
     </form>
+
+    <!-- 日志表格 -->
+    <h2>日志</h2>
+    <div class="log_text" id='log_list'>
+        <div id="log_text"></div>
+    </div>
+
+
 </div>
 
 <!-- 模态框 -->
@@ -72,5 +79,52 @@
         }, 3000);
     });
 </script>
+
+<script>
+    var time
+
+    // 创建一个元素节点
+    function insertAfter(newElement, targetElement) { // newElement是要追加的元素targetElement 是指定元素的位置
+        var parent = targetElement.parentNode; // 找到指定元素的父节点
+        parent.appendChild(newElement, targetElement);
+    };
+
+    function log() {
+        clearTimeout(time) // 清空定时器
+        var log_null = 0 //存放空日志次数
+        var div = document.getElementById('log_list') //找到存放日志的块
+        div.innerHTML = "<div id='log_text'></div>" // 每次跑清空div内内容
+        // 生成定时器
+        time = setInterval(function () {
+            $.get('/get_log', {}, function (data) { //请求获取日志接口获取日志
+                if (data.log_type == 3) { //如果获取的是空日志log_null次数加1
+                    log_null++
+                    if (log_null >= 5) {
+                        clearTimeout(time) //如果连续10次获取的都是空日志清除定时任务
+                    }
+                    return
+                }
+                if (data.log_type == 2) { //如果获取到新日志
+                    for (i = 0; i < data.log_list.length; i++) { //遍历日志
+                        var p = document.createElement("p") //生成一个p标签
+                        p.innerHTML = data.log_list[i] //日志存放到P标签内
+                        var header = document.getElementById('log_text')
+                        insertAfter(p, header) //将p标签添加到log_text div中
+                        div.scrollTop = div.scrollHeight //滚动条实时显示到底部
+                    }
+                    log_null = 0 //日志为空次数清0
+                }
+
+            })
+        }, 1000) //每1秒钟执行一次
+    }
+
+    window.onload = function () {
+        log()
+        // 页面一开就加载
+    };
+
+</script>
+
 </body>
 </html>

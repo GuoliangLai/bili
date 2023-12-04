@@ -1,58 +1,98 @@
 from biliResource import biliResource
 import feedparser
 import requests
+import hashlib
 from media import media_data_path
 from datetime import datetime
 # 解析RSS订阅的XML文件
 import os
 import sqlite3
-
-
+import time
+import configparser
+from biliResource import log
 
 class biliRss():
-    def __init__(self, rss, actors):
-        self.rss = rss
+    def __init__(self, u_id, actors):
+        self.u_id = u_id
         self.actors = actors
         self.resource_list = []
 
     def parse_res(self):
-        feed = feedparser.parse(self.rss)
-        # 检查是否成功解析
-        if feed.bozo == 0:
-            print(self.rss, "解析成功")
-        else:
-            print(self.rss, "解析失败")
-        # 输出标题和链接
-        for entry in feed.entries:
-            # print("标题:", entry.title)
-            # print("链接:", entry.link)
-            # print("时间:", entry.published)
-            nfo = entry.summary.split("<br />")[0]
-            img_url_start_index = entry.summary.find('http://')
-            img_url_end_index = entry.summary.find('.jpg') + len('.jpg')
-            img_url = entry.summary[img_url_start_index:img_url_end_index]
-            # 记录视频标题、链接、时间、简介、图像链接
-            datetime_obj = datetime.strptime(entry.published, "%a, %d %b %Y %H:%M:%S %Z")
-            title_date = datetime_obj.date().strftime("%Y-%m-%d")
-            video_resource = {'title': 'none', 'url': 'none', 'time': '1970-01-01', 'nfo': 'none', 'img_url': 'none', 'actors': 'none'}
-            video_resource['title'] = title_date + entry.title.replace(" ", "").replace("|", "").replace("'", "").replace(":", "").replace("?", "").replace("/", "")#删除空格和|'
-            video_resource['url'] = entry.link
-            video_resource['time'] = datetime_obj
-            video_resource['nfo'] = nfo
-            video_resource['img_url'] = img_url
-            video_resource['actors'] = self.actors
-            self.resource_list.append(video_resource)
-            # print("简介:", nfo)
-            # print("图像链接:", img_url)
-
+        config = configparser.RawConfigParser()
+        # 读取配置文件
+        config.read('./config/config.ini', encoding='utf-8')
+        cookie = config['base_cfg']['cookie']
+        # 模拟浏览器
+        cookies = {
+            "SESSDATA": cookie + ";"
+        }
+        headers = {
+            # 用户代理 表示浏览器基本身份信息
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+        }
+        string = f'keyword=&mid={self.u_id}&order=pubdate&order_avoided=true&platform=web&pn=1&ps=30&tid=0&web_location=1550101&wts={int(time.time())}6eff17696695c344b67618ac7b114f92'
+        # 实例化对象
+        md5_hash = hashlib.md5()
+        md5_hash.update(string.encode('utf-8'))
+        # 请求链接
+        url = 'https://api.bilibili.com/x/space/wbi/arc/search'
+        # 请求参数
+        data = {
+            'mid': self.u_id,
+            'ps': '30',
+            'tid': '0',
+            'pn': '1',
+            'keyword': '',
+            'order': 'pubdate',
+            'platform': 'web',
+            'web_location': '1550101',
+            'order_avoided': 'true',
+            'w_rid': md5_hash.hexdigest(),
+            'wts': int(time.time()),
+        }
+        # 发送请求 <Response [200]> 响应对象 表示请求成功
+        response = requests.get(url=url, params=data, headers=headers, cookies=cookies)
+        for index in response.json()['data']['list']['vlist']:
+            video_resource = {'title': 'none', 'url': 'none', 'time': '1970-01-01', 'nfo': 'none', 'img_url': 'none',
+                              'actors': 'none'}
+            # 时间戳 时间节点 --> 上传视频时间点
+            date = index['created']
+            if None != index['meta']:
+                dt = datetime.fromtimestamp(date)
+                dt_time = dt.strftime('%Y-%m-%d')
+                video_resource['title'] = dt_time + index['title'].replace(" ", "").replace("|", "").replace("'",
+                                                                                                             "").replace(
+                    ":", "").replace("?", "").replace("/", "").replace(".", "")  # 删除空格和|'
+                video_resource['url'] = 'https://www.bilibili.com/video/{}'.format(index['bvid'])
+                video_resource['time'] = dt
+                video_resource['nfo'] = index['description']
+                video_resource['img_url'] = index['pic']
+                video_resource['actors'] = self.actors
+                video_resource['meta'] = index['meta']['title']
+                video_resource['flag'] = index['meta']['title']
+                self.resource_list.append(video_resource)
+            else:
+                dt = datetime.fromtimestamp(date)
+                dt_time = dt.strftime('%Y-%m-%d')
+                video_resource['title'] = dt_time + index['title'].replace(" ", "").replace("|", "").replace("'",
+                                                                                                             "").replace(
+                    ":", "").replace("?", "").replace("/", "").replace(".", "")  # 删除空格和|'
+                video_resource['url'] = 'https://www.bilibili.com/video/{}'.format(index['bvid'])
+                video_resource['time'] = dt
+                video_resource['nfo'] = index['description']
+                video_resource['img_url'] = index['pic']
+                video_resource['actors'] = self.actors
+                video_resource['meta'] = None
+                video_resource['flag'] = None
+                self.resource_list.append(video_resource)
+        log.info('开始订阅：%s', self.actors)
     def get_resource_list(self):
         return self.resource_list
 
 
-
 def from_resource_get_img(resource_list, base_path):
     if len(resource_list) <= 0:
-        print("无资源列表，不下载任何图像！")
+        log.warn("无资源列表，不下载任何图像！")
         return 0
     for resource in resource_list:
         filename = '{}.jpg'.format(resource['title'])
@@ -76,20 +116,21 @@ def from_resource_get_img(resource_list, base_path):
         image_save_path = os.path.join(image_save_path, filename)
         if os.path.exists(image_save_path):
             continue
-        #先检查是否存在该路径，不存在则会递归创建
+        # 先检查是否存在该路径，不存在则会递归创建
         os.makedirs(os.path.dirname(image_save_path), exist_ok=True)
-        print(image_save_path)
+        log.info('image_save_path%s', image_save_path)
         # 检查请求是否成功
-        print(filename)
+        log.info('image_save_path filename%s', filename)
         # 发送HTTP请求获取图片内容
         response = requests.get(img_url, headers=headers)
         if response.status_code == 200:
             # 将图片内容保存到文件
             with open(image_save_path, 'wb') as file:
                 file.write(response.content)
-            print(filename, '图片下载成功:', filename)
+            log.info('图片下载成功:%s', filename)
         else:
-            print(filename, '图片下载失败')
+            log.error('图片下载失败%s', filename)
+
 
 def add_media_item_to_db(item):
     conn = sqlite3.connect('./database/media.db')

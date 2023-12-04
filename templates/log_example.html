@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>日志</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js"></script>
+    <script type="text/javascript">
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        socket.on('log', function(msg) {
+            var logElement = document.getElementById('log');
+            logElement.innerHTML += msg + '<br>';
+        });
+    </script>
+</head>
+<body>
+    <h1>日志</h1>
+    <pre id="log"></pre>
+</body>
+</html>

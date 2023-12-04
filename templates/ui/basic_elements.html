@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bili Down</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="static/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="static/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="static/css/select2.min.css">
+    <link rel="stylesheet" href="static/css/select2-bootstrap.min.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="static/css/style.css">
+    <!-- End layout styles -->
+   
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:../../partials/_sidebar.html -->
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+          <a class="sidebar-brand brand-logo" href="index.html"><img src="static/picture/logo.svg" alt="logo"></a>
+          <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="static/picture/logo-mini.svg" alt="logo"></a>
+        </div>
+        <ul class="nav">
+          <li class="nav-item profile">
+            <div class="profile-desc">
+              <div class="profile-pic">
+                <div class="count-indicator">
+                  <img class="img-xs rounded-circle " src="static/picture/face15.jpg" alt="">
+                  <span class="count bg-success"></span>
+                </div>
+                <div class="profile-name">
+                  <h5 class="mb-0 font-weight-normal">user</h5>
+                  <span>管理员</span>
+                </div>
+              </div>
+              <a href="#" id="profile-dropdown" data-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
+              <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list" aria-labelledby="profile-dropdown">
+                <a href="#" class="dropdown-item preview-item">
+                  <div class="preview-thumbnail">
+                    <div class="preview-icon bg-dark rounded-circle">
+                      <i class="mdi mdi-settings text-primary"></i>
+                    </div>
+                  </div>
+                  <div class="preview-item-content">
+                    <p class="preview-subject ellipsis mb-1 text-small">账户设置</p>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item preview-item">
+                  <div class="preview-thumbnail">
+                    <div class="preview-icon bg-dark rounded-circle">
+                      <i class="mdi mdi-onepassword  text-info"></i>
+                    </div>
+                  </div>
+                  <div class="preview-item-content">
+                    <p class="preview-subject ellipsis mb-1 text-small">修改密码</p>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+              </div>
+            </div>
+          </li>
+          <li class="nav-item nav-category">
+            <span class="nav-link">导航</span>
+          </li>
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="">
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+              <span class="menu-title">基础设置</span>
+            </a>
+          </li>
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="javascript:;">
+              <span class="menu-icon">
+                <i class="mdi mdi-file-document-box"></i>
+              </span>
+              <span class="menu-title">相关信息</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:../../partials/_navbar.html -->
+        <nav class="navbar p-0 fixed-top d-flex flex-row">
+          <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
+            <a class="navbar-brand brand-logo-mini" href="index.html"><img src="static/picture/logo-mini.svg" alt="logo"></a>
+          </div>
+          <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+              <span class="mdi mdi-menu"></span>
+            </button>
+            <ul class="navbar-nav w-100">
+              <li class="nav-item w-100">
+                <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
+                  <input type="text" class="form-control" placeholder="Search products">
+                </form>
+              </li>
+            </ul>
+            <ul class="navbar-nav navbar-nav-right">
+              <li class="nav-item nav-settings d-none d-lg-block">
+                <a class="nav-link" href="#">
+                  <i class="mdi mdi-view-grid"></i>
+                </a>
+              </li>
+              <li class="nav-item dropdown border-left">
+                <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
+                  <i class="mdi mdi-email"></i>
+                  <span class="count bg-success"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
+                  <h6 class="p-3 mb-0">动态</h6>
+                  <div class="dropdown-divider"></div>
+                  {% for item in dynamic_items %}
+                  <a href="{{ item.url }}" class="dropdown-item preview-item">
+                    <div class="preview-thumbnail">
+                      <img src="{{ item.image }}" alt="image" class="rounded-circle profile-pic">
+                    </div>
+                    <div class="preview-item-content">
+                      <p  class="preview-subject ellipsis mb-1">{{ item.title }}</p>
+                      <p class="text-muted mb-0"> {{ item.time }} </p>
+                    </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  {% endfor %}
+                  <p class="p-3 mb-0 text-center">更多</p>
+                </div>
+              </li>
+              <li class="nav-item dropdown border-left">
+                <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
+                  <i class="mdi mdi-bell"></i>
+                  <span class="count bg-danger"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+                  <h6 class="p-3 mb-0">日志</h6>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item preview-item">
+                    <div class="preview-thumbnail">
+                      <div class="preview-icon bg-dark rounded-circle">
+                        <i class="mdi mdi-calendar text-success"></i>
+                      </div>
+                    </div>
+                    <div class="preview-item-content">
+                      <p class="preview-subject mb-1">日志</p>
+                      <p class="text-muted ellipsis mb-0">查看日志 </p>
+                    </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item preview-item">
+                    <div class="preview-thumbnail">
+                      <div class="preview-icon bg-dark rounded-circle">
+                        <i class="mdi mdi-link-variant text-warning"></i>
+                      </div>
+                    </div>
+                    <div class="preview-item-content">
+                      <p class="preview-subject mb-1">立刻订阅</p>
+                      <p class="text-muted ellipsis mb-0">立刻开始订阅</p>
+                    </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <p class="p-3 mb-0 text-center">更多....</p>
+                </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
+                  <div class="navbar-profile">
+                    <img class="img-xs rounded-circle" src="static/picture/face15.jpg" alt="">
+                    <p class="mb-0 d-none d-sm-block navbar-profile-name">lai</p>
+                    <i class="mdi mdi-menu-down d-none d-sm-block"></i>
+                  </div>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
+                  <h6 class="p-3 mb-0">快捷</h6>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item preview-item">
+                    <div class="preview-thumbnail">
+                      <div class="preview-icon bg-dark rounded-circle">
+                        <i class="mdi mdi-settings text-success"></i>
+                      </div>
+                    </div>
+                    <div class="preview-item-content">
+                      <p class="preview-subject mb-1">设置</p>
+                    </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item preview-item">
+                    <div class="preview-thumbnail">
+                      <div class="preview-icon bg-dark rounded-circle">
+                        <i class="mdi mdi-logout text-danger"></i>
+                      </div>
+                    </div>
+                    <div class="preview-item-content">
+                      <p class="preview-subject mb-1">退出</p>
+                    </div>
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <p class="p-3 mb-0 text-center">更多....</p>
+                </div>
+              </li>
+            </ul>
+            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+              <span class="mdi mdi-format-line-spacing"></span>
+            </button>
+          </div>
+        </nav>
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title"> 基础配置 </h3>
+              <nav aria-label="breadcrumb">
+              </nav>
+            </div>
+            <div class="row">
+              <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">订阅配置</h4>
+                    <form action="/save" class="forms-sample">
+                      <div class="form-group">
+                        <label for="cookie">cookie：</label>
+                        <input type="text" class="form-control" id="cookie" value="{{ cookie }}">
+                      </div>
+                      <div class="form-group">
+                        <label for="user_id">用户id：</label>
+                        <input type="text" class="form-control" id="user_id" value="{{ user_id }}">
+                      </div>
+                      <div class="form-group">
+                        <label for="dir">文件路径：</label>
+                        <input type="text" class="form-control" id="dir" value="{{ dir }}">
+                      </div>
+                      <div class="form-group">
+                        <label for="quality">视频质量：</label>
+                        <select class="form-control" id="quality">
+                          <option>360p</option>
+                          <option>480p</option>
+                          <option>720p</option>
+                          <option>720p 60</option>
+                          <option>1080p</option>
+                          <option>1080p high</option>
+                          <option>1080p 60</option>
+                          <option>2k</option>
+                          <option>4k</option>
+                          <option>HDR</option>
+                          <option>8k</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="attention_day">订阅天数：</label>
+                        <input type="number" class="form-control" id="attention_day" value="{{ attention_day }}">
+                      </div>
+                      <div class="form-group">
+                        <label for="get_time">订阅间隔(h)：</label>
+                        <input type="number" class="form-control" id="get_time" value="{{ get_time }}">
+                      </div>
+                      <button id='btn-save' type="submit" class="btn btn-primary mr-2">保存并运行</button>
+                      <button class="btn btn-dark">取消</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:../../partials/_footer.html -->
+          <footer class="footer">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+              bili downloader <a target="_blank" href="https://github.com/GuoliangLai">github</a>
+            </div>
+          </footer>
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+</div>
+    <!-- 模态框 -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+         aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="successModalLabel">保存成功</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            保存成功！，将在下一次订阅中生效！！！
+          </div>
+        </div>
+      </div>
+    </div>
+
+<script>
+    // 获取保存并运行按钮元素
+    var saveButton = document.getElementById('btn-save');
+
+    // 添加点击事件监听器
+    saveButton.addEventListener('click', function(event) {
+        event.preventDefault(); // 阻止表单的默认提交行为
+
+        // 获取表单中的输入值
+        var cookie = document.getElementById('cookie').value;
+        var userId = document.getElementById('user_id').value;
+        var filePath = document.getElementById('dir').value;
+        var videoQuality = document.getElementById('quality').value;
+        var attentionDay = document.getElementById('attention_day').value;
+        var subscribeInterval = document.getElementById('get_time').value;
+
+        // 执行保存并运行的逻辑
+        // 在这里可以使用获取到的输入值进行相应的操作
+
+        // 示例：在控制台打印输入值
+        console.log('Cookie:', cookie);
+        console.log('用户ID:', userId);
+        console.log('文件路径:', filePath);
+        console.log('视频质量:', videoQuality);
+        console.log('订阅天数:', attentionDay);
+        console.log('订阅间隔(h):', subscribeInterval);
+        var host = window.location.host
+      console.log(host)
+      fetch( 'http://' + host + '/api/save', {
+        headers: {
+          'Sessdata': cookie, // 设置请求头
+          'userId': userId, // 设置另一个请求头
+          'filePath': filePath,
+          'videoQuality': videoQuality,
+          'attentionDay': attentionDay,
+          'subscribeInterval': subscribeInterval
+        }
+      })
+              .then(function (response) {
+                // 处理响应
+              })
+              .catch(function (error) {
+                // 处理错误
+              });
+    });
+</script>
+
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="static/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="static/js/select2.min.js"></script>
+    <script src="static/js/typeahead.bundle.min.js"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="static/js/off-canvas.js"></script>
+    <script src="static/js/hoverable-collapse.js"></script>
+    <script src="static/js/misc.js"></script>
+    <script src="static/js/settings.js"></script>
+    <script src="static/js/todolist.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <script src="static/js/file-upload.js"></script>
+    <script src="static/js/typeahead.js"></script>
+    <script src="static/js/select2.js"></script>
+    <!-- End custom js for this page -->
+  </body>
+</html>

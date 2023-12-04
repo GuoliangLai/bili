@@ -1,8 +1,10 @@
 import sqlite3
 import datetime
+
 media_data_path = './database/media.db'
 
-def generate_nfo_xml(title, src, uptime, nfo, actors):
+
+def generate_nfo_xml(title, src, uptime, nfo, actors, meta, flag):
     nfo_content = f'''<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <movie>
   <plot><![CDATA[{nfo}]]></plot>
@@ -19,7 +21,13 @@ def generate_nfo_xml(title, src, uptime, nfo, actors):
   <premiered>{uptime}</premiered>
   <releasedate>{uptime}</releasedate>
   <tagline>发行日期 {uptime}</tagline>
+   <set>
+    <name>{meta}</name>
+  </set>
+  <series>{meta}</series>
   <genre>{actors}</genre>
+  <genre>{meta}</genre>
+  <tag>{flag}</tag>
   <website>{src}</website>
 </movie>
         '''
@@ -28,20 +36,22 @@ def generate_nfo_xml(title, src, uptime, nfo, actors):
 
 class baseMedia:
     # 媒体由基本的三部分组成，即媒体标题、媒体的资源文件（可能是文件也可能是链接，也可能是路径）、媒体的nfo内容（媒体简介）
-    def __init__(self, title, src, uptime, nfo, actors):
+    def __init__(self, title, src, uptime, nfo, actors, meta=None, flag=None):
         self.title = title
         self.src = src
         self.uptime = uptime
-        self.nfo = generate_nfo_xml(title, src, uptime, nfo, actors)
+        self.nfo = generate_nfo_xml(title, src, uptime, nfo, actors, meta, flag)
         self.actors = actors
+        self.meta = meta
+        self.flag = flag
         conn = sqlite3.connect('./database/media.db')
         # 创建一个游标对象，用于执行SQL语句
         cursor = conn.cursor()
         # 创建一个表格
         cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS media(title TEXT, src TEXT, uptime Datetime, nfo TEXT, actors TEXT)''')
-        cursor.execute("INSERT INTO media VALUES (?, ?, ?, ?, ?)",
-                       (self.title, self.src, self.uptime, self.nfo, self.actors))
+            '''CREATE TABLE IF NOT EXISTS media(title TEXT, src TEXT, uptime Datetime, nfo TEXT, actors TEXT, meta TEXT, flag TEXT)''')
+        cursor.execute("INSERT INTO media VALUES (?, ?, ?, ?, ?, ?, ?)",
+                       (self.title, self.src, self.uptime, self.nfo, self.actors, self.meta, self.flag))
         # 提交事务并关闭连接
         conn.commit()
         conn.close()
@@ -60,6 +70,12 @@ class baseMedia:
 
     def get_actors(self):
         return self.actors
+
+    def get_meta(self):
+        return self.get_meta
+
+    def get_flag(self):
+        return self.flag
 
     def form_title_get_src(self, title):
         # 连接到数据库
